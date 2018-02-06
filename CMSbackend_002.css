@@ -8,3 +8,8 @@ table, th, td {
 #artikelinvoer {
   display: block;
 }
+
+#buffer {
+  display: block;
+  /* display: none; */
+}

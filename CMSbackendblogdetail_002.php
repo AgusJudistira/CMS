@@ -88,7 +88,6 @@
           $db = dbconnect();
 
           if (categorie_nogniet_toegevoegd($blog_id, $cat_id)) {
-            echo "<p>Categorie is nog niet toegevoegd. Nu toevoegen dus</p>";
             $stmt = $db->prepare("INSERT INTO categorietoekenning (id_blog, id_categorie) VALUES (?, ?)");
             $stmt->bind_param("ss", $blog_id, $cat_id);
             $stmt->execute();
@@ -129,7 +128,7 @@
       $blog_details = get_one_blog($blog_id);
       echo $blog_details;
       echo "<br />";
-
+/*
       echo "<form id=\"artikelinvoer\" method=\"post\" action=\"$thisfile\">";
       echo "Blogtitel: <input id=\"blogtitel\" name=\"blogtitel\" type=\"text\" value=\"$titel\" required>";
       echo "Categorie:";
@@ -137,11 +136,25 @@
       echo $cat_keuze_menu;
       echo "</select>";
       echo "</form>";
-      echo "<textarea rows=\"5\" cols=\"80\" name=\"artikel\" form=\"artikelinvoer\">";
+      echo "<textarea id=\"editor\" rows=\"5\" cols=\"80\" name=\"artikel\" form=\"artikelinvoer\">";
       echo $artikel;
       echo "</textarea>";
       echo "<input id=\"sendButton\" name=\"submit\" type=\"submit\" value=\"Verstuur\" form=\"artikelinvoer\">";
+*/
     ?>
+
+    <form id="artikelinvoer" method="post" action="<?php echo $thisfile; ?>">
+Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="<?php echo $titel; ?>" required>
+Categorie: <select name="categorie">
+              <?php echo $cat_keuze_menu ?>
+           </select>
+    </form>
+    <textarea id="editor" rows="5" cols="80" name="artikel" form="artikelinvoer"
+    title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+Typ '/ag' in om 'Agus Judistira' in te voeren">
+<?php echo $artikel ?>
+    </textarea>
+    <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
 
     <h3><a href="CMSbackend_002.php">Terug naar blog administratie</a></h3>
 

@@ -29,7 +29,7 @@
         return $keuzemenu;
       }
 
-      function show_blogsandcats() {
+      function get_blogsandcats() {
         $link_to_detail = "CMSbackendblogdetail_002.php";
         $db = dbconnect();
 
@@ -42,17 +42,19 @@
         $stmt->execute();
         $stmt->bind_result($id, $titel, $datuminvoer, $category);
 
-        /* fetch values */
-        echo "<table>";
-        echo "<th>Titel</th><th>Datum publicatie</th><th>Categorie</th>";
+        $bloglist = "";
+
+        $bloglist .= "<table>";
+        $bloglist .= "<th>Titel</th><th>Datum publicatie</th><th>Categorie</th>";
         while ($stmt->fetch()) {
-          echo "<tr>";
-          echo "<td><a href=\"$link_to_detail?id=$id\">$titel</a></td><td>$datuminvoer</td><td>$category</td>";
-          echo "</tr>";
+          $bloglist .= "<tr>";
+          $bloglist .= "<td><a href=\"$link_to_detail?id=$id\">$titel</a></td><td>$datuminvoer</td><td>$category</td>";
+          $bloglist .= "</tr>";
         }
-        echo "</table>";
+        $bloglist .= "</table>";
 
         $stmt->close();
+        return $bloglist;
       }
 
 
@@ -66,12 +68,7 @@
 
           $lastid = mysqli_insert_id($db);
 
-/*
-          if (!mysqli_query($db,"INSERT INTO Blogs (titel, artikel) VALUES ('$blogtitel','$artikel')"))
-          {
-            echo("Error description: " . mysqli_error($db));
-          }
-*/
+
           echo "<p>Blog toegevoegd.</p>";
           return $lastid;
           $stmt->close();
@@ -90,7 +87,7 @@
 
       $thisfile = $_SERVER['PHP_SELF'];
       // echo $thisfile;
-      show_blogsandcats();
+      $bloglist = get_blogsandcats();
       $categoriekeuzemenu = get_categories();
 
       if (isset($_POST['submit'])) {
@@ -102,12 +99,13 @@
           $lastid = insert_blog($blogtitel, $artikel);
           insert_category($lastid, $cat_id);
 
-          show_blogsandcats();
+          $bloglist = get_blogsandcats();
         }
       }
 
+      echo $bloglist;
     ?>
-
+    <br />
     <form id="artikelinvoer" method="post" action="<?php echo $thisfile ?>">
       Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="" required>
       Categorie:
@@ -117,9 +115,13 @@
         ?>
       </select>
     </form>
-    <textarea rows="5" cols="80" name="artikel" form="artikelinvoer">
+    <textarea id="editor" rows="5" cols="80" name="artikel" form="artikelinvoer"
+    title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+Typ '/ag' in om 'Agus Judistira' in te voeren">
 Voer een blog in...</textarea>
     <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
+    <div id="buffer">
+    </div>
     <h3><a href="CMSbackendcategory_002.php">Categorie toevoegen</a></h3>
     <h3><a href="CMSfrontend_002.php">Naar de voorkant</a></h3>
 
