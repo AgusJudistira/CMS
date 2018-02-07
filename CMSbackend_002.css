@@ -13,3 +13,38 @@ table, th, td {
   display: block;
   /* display: none; */
 }
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+#linkerkolom {
+  float: left;
+  padding: 10px;
+}
+
+#rechterkolom {
+  float: right;
+  padding: 10px;
+}
+
+.left {
+  width: 25%;
+}
+
+.right {
+  width: 75%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+#invisible-data {
+  display: none;
+}

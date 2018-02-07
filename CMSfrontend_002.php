@@ -10,10 +10,6 @@
     <?php
       require_once "dbconnect.php"; // bestand met de login gegevens voor de database
 
-      $thisfile = $_SERVER['PHP_SELF'];
-
-      $categoriekeuzemenu = ""; // om categorie keuzemenu html tags in te bewaren
-
       // stop alle bestaande categorieen in een string voor keuzemenu (klaar voor <select> tag)
       function get_categories($thisfile) {
 
@@ -120,7 +116,7 @@
       }
 
 
-      function get_comments($id_blog) {
+      function get_comments($id_blog, $thisfile) {
           // Laat de commentaren bij een blog zien
           $db = dbconnect();
 
@@ -140,6 +136,13 @@
               $commentaren .= "<tr><td>$commentaar</td></tr>";
               $commentaren .= "</table></p>";
           }
+          
+          $commentaren .= "<form id='commentaarinvoer' method='post' action='$thisfile'>";
+          $commentaren .= "Naam: <input id='naam' name='naam' type='text' value='anoniem' required>";
+          $commentaren .= "</form>";
+          $commentaren .= "<textarea id='commentaar' rows='5' cols='80' name='commentaar' form='commentaarinvoer'>";
+          $commentaren .= "Voer een commentaar in...</textarea>";
+          $commentaren .= "<input id='sendButton' name='submit' type='submit' value='Verstuur' form='commentaarinvoer'>";
 
           $stmt->close();
           return $commentaren;
@@ -156,6 +159,8 @@
           $stmt->close();
       }
 
+      $thisfile = $_SERVER['PHP_SELF'];
+
       $categoriekeuzemenu = get_categories($thisfile);
       $comments = "";
       $link_naar_secties = "<h3><a href=\"CMSbackend_002.php\">Naar administratie aan de achterkant</a></h3>";
@@ -163,11 +168,13 @@
       if (isset($_GET['cat_id'])) {
         $id_cat = $_GET['cat_id'];
         $bloglist = get_blogs_catfiltered($id_cat);
+
       } else if (isset($_GET['blog_id'])) {
+          //echo "Is hier terecht gekomen";
           $id_blog = $_GET['blog_id'];
           setcookie('blog_id',$id_blog);
           $bloglist = get_onefullblog($id_blog);
-          $comments = get_comments($id_blog);
+          $comments = get_comments($id_blog, $thisfile);
           $link_naar_secties = "<h3><a href=\"CMSfrontend_002.php\">Terug naar overzicht</a></h3>";
         } else if (isset($_POST['commentaar'])) {
             $commentaar = $_POST['commentaar'];
@@ -176,7 +183,7 @@
 
             commentaar_invoeren($id_blog, $naam, $commentaar);
             $bloglist = get_onefullblog($id_blog);
-            $comments = get_comments($id_blog);
+            $comments = get_comments($id_blog, $thisfile);
         } else {
             $bloglist = get_bloglist($thisfile);
       }
@@ -194,13 +201,6 @@
           echo $bloglist;
           echo $comments;
         ?>
-        <form id="commentaarinvoer" method="post" action="<?php echo $thisfile ?>">
-          Naam: <input id="naam" name="naam" type="text" value="anoniem" required>
-        </form>
-        <textarea id="commentaar" rows="5" cols="80" name="commentaar" form="commentaarinvoer">
-Voer een commentaar in...</textarea>
-        <input id="sendButton" name="submit" type="submit" value="Verstuur" form="commentaarinvoer">
-      </div>
 
     <script src="CMSfrontend_002.js"></script>
   </body>

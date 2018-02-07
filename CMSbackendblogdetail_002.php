@@ -38,17 +38,16 @@
                                 WHERE Blogs.id = $blog_id;");
 
           $stmt->execute();
-          $stmt->bind_result($id, $titel, $artikel, $datuminvoer, $category);
+          $stmt->bind_result($id, $titel, $artikel, $datuminvoer, $categorie);
 
           /* fetch values */
           $one_blog = "";
           $one_blog .= "<table>";
-          $one_blog .= "<th>Titel</th><th>Datum publicatie</th><th>Categorie</th>";
+          //$one_blog .= "<th>Titel</th><th>Datum publicatie</th><th>Categorie</th>";
           while ($stmt->fetch()) {
-            $one_blog .= "<tr>";
-            $one_blog .= "<td>$titel</td><td>$datuminvoer</td><td>$category</td>";
-            $one_blog .= "</tr>";
-            $one_blog .= "<tr><td colspan=\"3\">$artikel</td></tr>";
+            $one_blog .= "<th colspan='2'>$titel</th>";
+            $one_blog .= "<tr><td>Datum publicatie: $datuminvoer</td><td>Categorie: $categorie</td></tr>";
+            $one_blog .= "<tr><td colspan='2'>$artikel</td></tr>";
           }
           $one_blog .= "</table>";
 
@@ -63,8 +62,6 @@
                                 WHERE id = $blog_id");
           //$stmt->bind_param("ss", $blogtitel, $artikel);
           $stmt->execute();
-
-          //$lastid = mysqli_insert_id($db);
 
           echo "<p>Blog bijgewerkt.</p>";
           //return $lastid;
@@ -99,18 +96,58 @@
           }
       }
 
+      function get_comments($blog_id) {
+          // Laat de commentaren bij een blog zien
+          $db = dbconnect();
+
+          $stmt = $db->prepare("SELECT commentaren.id, commentaren.naam, commentaren.commentaar
+                                FROM commentaren JOIN Blogs ON Blogs.id = commentaren.id_blog
+                                WHERE commentaren.id_blog = $blog_id
+                                ORDER BY commentaren.id;");
+
+          $stmt->execute();
+          $stmt->bind_result($commentaar_id, $naam, $commentaar);
+          $commentaren = "<p>Commentaren van lezers:</p>";
+
+          $commentaren .= "<form id='commentaren-form' method='post' action='$thisfile'>";
+          while ($stmt->fetch()) {
+              $commentaren .= "<p><table>";
+              $commentaren .= "<tr><td>Commentaar van: $naam</td><td>";
+              //$commentaren .= "<input id='invisible-data' name='verwijder-id' type='text' value='$commentaar_id' form='commentaren-form'></div>";
+              $commentaren .= "<input id='deleteButton' name='verwijder' type='submit' value='Verwijder (#$commentaar_id)' form='commentaren-form'></td></tr>";
+              $commentaren .= "<tr><td>$commentaar</td></tr>";
+              $commentaren .= "</table></p>";
+          }
+          $commentaren .= "</form>";
+          $stmt->close();
+          return $commentaren;
+      }
+
+      function verwijder_commentaar($commentaar_id) {
+        $db = dbconnect();
+
+        $stmt = $db->prepare("DELETE FROM commentaren
+                              WHERE commentaren.id = $commentaar_id;");
+
+        $stmt->execute();
+        $stmt->close();
+      }
 
       $titel = "";
       $artikel = "";
 
       if (isset($_GET['id'])) {
         $blog_id = $_GET['id'];
-        //echo "cookie blog id: $blog_id";
         setcookie('blog_id',$blog_id);
       }
       else {
         $blog_id = $_COOKIE['blog_id'];
-        //echo "cookie blog id: $blog_id";
+      }
+
+      if (isset($_POST['verwijder'])) {
+        $commentaar_id = filter_var($_POST['verwijder'], FILTER_SANITIZE_NUMBER_INT);
+        //echo "Commentaar id: $commentaar_id zal verwijderd worden";
+        verwijder_commentaar($commentaar_id);
       }
 
       if (isset($_POST['submit'])) {
@@ -122,27 +159,19 @@
         categorie_toevoegen($blog_id, $cat_id);
       }
 
-      //echo "<p>Blog id voor get_categories: $blog_id</p>";
       $cat_keuze_menu = get_categories($blog_id);
-      //echo "categories created";
       $blog_details = get_one_blog($blog_id);
-      echo $blog_details;
-      echo "<br />";
-/*
-      echo "<form id=\"artikelinvoer\" method=\"post\" action=\"$thisfile\">";
-      echo "Blogtitel: <input id=\"blogtitel\" name=\"blogtitel\" type=\"text\" value=\"$titel\" required>";
-      echo "Categorie:";
-      echo "<select name=\"categorie\">";
-      echo $cat_keuze_menu;
-      echo "</select>";
-      echo "</form>";
-      echo "<textarea id=\"editor\" rows=\"5\" cols=\"80\" name=\"artikel\" form=\"artikelinvoer\">";
-      echo $artikel;
-      echo "</textarea>";
-      echo "<input id=\"sendButton\" name=\"submit\" type=\"submit\" value=\"Verstuur\" form=\"artikelinvoer\">";
-*/
+      $commentaren = get_comments($blog_id);
     ?>
-
+    <div id="linkerkolom">
+        <h3><a href="CMSbackend_002.php">Terug naar blog administratie</a></h3>
+    </div>
+    <div id="rechterkolom">
+      <?php
+        echo $blog_details;
+        echo $commentaren;
+        echo "<br />";
+      ?>
     <form id="artikelinvoer" method="post" action="<?php echo $thisfile; ?>">
 Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="<?php echo $titel; ?>" title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
 Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
@@ -160,8 +189,8 @@ Typ '/mvg' in om 'Met vriendelijke groet' in te voeren">
 <?php echo $artikel ?>
       </textarea>
     <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
+</div>
 
-    <h3><a href="CMSbackend_002.php">Terug naar blog administratie</a></h3>
 
     <script src="CMSbackend_002.js"></script>
   </body>

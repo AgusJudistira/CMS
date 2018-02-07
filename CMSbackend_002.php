@@ -103,33 +103,40 @@
         }
       }
 
-      echo $bloglist;
+
     ?>
-    <br />
-    <form id="artikelinvoer" method="post" action="<?php echo $thisfile ?>">
-      Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="" title=
-      "Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
-Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
-Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
-Typ '/mvg' in om 'Met vriendelijke groet' in te voeren"> required>
-      Categorie:
-      <select name="categorie">
-        <?php
-        echo $categoriekeuzemenu;
-        ?>
-      </select>
-    </form>
-      <textarea id="editor" rows="5" cols="80" name="artikel" form="artikelinvoer"
-    title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+    <div class="row">
+      <div id="linkerkolom">
+        <h3><a href="CMSbackendcategory_002.php">Categorie toevoegen</a></h3>
+        <h3><a href="CMSfrontend_002.php">Naar de voorkant</a></h3>
+      </div>
+      <div id="rechterkolom">
+        <?php echo $bloglist; ?>
+        <br />
+        <form id="artikelinvoer" method="post" action="<?php echo $thisfile ?>">
+        Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="" title=
+        "Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+  Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
+  Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
+  Typ '/mvg' in om 'Met vriendelijke groet' in te voeren" required>
+        Categorie:
+          <select name="categorie">
+            <?php
+            echo $categoriekeuzemenu;
+            ?>
+          </select>
+        </form>
+        <textarea id="editor" rows="5" cols="80" name="artikel" form="artikelinvoer"
+                  title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
 Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
 Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
 Typ '/mvg' in om 'Met vriendelijke groet' in te voeren">
 Voer een blog in...</textarea>
       <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
-    <div id="buffer">
     </div>
-    <h3><a href="CMSbackendcategory_002.php">Categorie toevoegen</a></h3>
-    <h3><a href="CMSfrontend_002.php">Naar de voorkant</a></h3>
+  </div>
+    <!-- <div id="buffer">
+    </div> -->
 
     <script src="CMSbackend_002.js"></script>
   </body>
