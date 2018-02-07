@@ -1,7 +1,10 @@
 var editor = document.getElementById('editor');
 var blogtitel = document.getElementById('blogtitel');
 var buffer = "";
-var afkortingen = [['/cg','Code Gorilla'], ['/ag', 'Agus Judistira']];
+var afkortingen = [['/cg','Code Gorilla'],
+                   ['/ag', 'Agus Judistira'],
+                   ['/mvg', 'Met vriendelijke groet,'],
+                   ['/nl', 'Nederland']];
 
 function initEditor() {
   editor.onkeyup = function(e) {
@@ -36,8 +39,8 @@ function initEditor() {
       }
     }
 
-    if (buffer.length > 3) {
-      buffer = buffer.substring(buffer.length - 3);
+    if (buffer.length > 7) {
+      buffer = buffer.substring(buffer.length - 7);
     }
   }
 

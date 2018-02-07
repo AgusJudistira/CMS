@@ -25,7 +25,7 @@
         $stmt->execute();
         $stmt->bind_result($id, $categorienaam);
 
-        $keuzemenu .= "<div><a href=\"$thisfile\">Alle categorieen</a></div>";
+        $keuzemenu .= "<div><h4><a href=\"$thisfile\">Alle categorieen</a></h4></div>";
 
         while ($stmt->fetch()) {
           // $keuzemenu .= "<option value='$id'>$categorienaam</option>";
@@ -35,25 +35,25 @@
       }
 
       // toon blogs gefilterd op een bepaalde categorie
-      function show_blogs_catfiltered($id_cat) {
+      function get_blogs_catfiltered($id_cat) {
           $db = dbconnect();
-          $stmt = $db->prepare("SELECT Blogs.titel, Blogs.datuminvoer, categorienamen.categorienaam
+          $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.datuminvoer, categorienamen.categorienaam
                                 FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
                                            LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
                                 WHERE categorietoekenning.id_categorie = $id_cat
                                 ORDER BY Blogs.datuminvoer DESC");
 
           $stmt->execute();
-          $stmt->bind_result($titel, $datuminvoer, $categorie);
+          $stmt->bind_result($id_blog, $titel, $datuminvoer, $categorie);
 
           $bloglist = "";
           // echo "<div id='rechterkolom'>";
           $bloglist .= "<table>";
           $bloglist .= "<th>Titel</th><th>Datum publicatie</th><th>Categorie</th>";
           while ($stmt->fetch()) {
-            $bloglist .= "<tr>";
-            $bloglist .= "<td>$titel</td><td>$datuminvoer</td><td>$categorie</td>";
-            $bloglist .= "</tr>";
+              $bloglist .= "<tr>";
+              $bloglist .= "<td><a href=\"$thisfile?blog_id=$id_blog\">$titel</a></td><td>$datuminvoer</td><td>$categorie</td>";
+              $bloglist .= "</tr>";
           }
           $bloglist .= "</table>";
 
@@ -64,64 +64,143 @@
       }
 
 
-      function show_bloglist() {
+      function get_bloglist($thisfile) {
 
           $db = dbconnect();
 
-          $stmt = $db->prepare("SELECT Blogs.titel, Blogs.datuminvoer, GROUP_CONCAT(categorienamen.categorienaam SEPARATOR ', ')
+          $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.datuminvoer, GROUP_CONCAT(categorienamen.categorienaam SEPARATOR ', ')
                                 FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
                                            LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
                                 GROUP BY Blogs.titel
                                 ORDER BY Blogs.datuminvoer DESC");
           //$stmt->bind_param("ss", $blogtitel, $artikel);
           $stmt->execute();
-          $stmt->bind_result($titel, $datuminvoer, $categorie);
+          $stmt->bind_result($id_blog, $titel, $datuminvoer, $categorie);
 
-          // echo "<div id='rechterkolom'>";
-          $blogist = "";
+          $bloglist = "";
           $bloglist .= "<table>";
           $bloglist .= "<th>Titel</th><th>Datum publicatie</th><th>Categorie</th>";
           while ($stmt->fetch()) {
-            $bloglist .= "<tr>";
-            $bloglist .= "<td>$titel</td><td>$datuminvoer</td><td>$categorie</td>";
-            $bloglist .= "</tr>";
+              $bloglist .= "<tr>";
+              $bloglist .= "<td><a href=\"$thisfile?blog_id=$id_blog\">$titel</a></td><td>$datuminvoer</td><td>$categorie</td>";
+              $bloglist .= "</tr>";
           }
           $bloglist .= "</table>";
-          // echo "</div>";
 
           $stmt->close();
           return $bloglist;
       }
 
+      function get_onefullblog($id_blog) {
+          // Laat een volle blog zien
+          $db = dbconnect();
+
+          $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.artikel, Blogs.datuminvoer, GROUP_CONCAT(categorienamen.categorienaam SEPARATOR ', ')
+                                FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
+                                           LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
+                                WHERE Blogs.id = $id_blog;");
+
+          $stmt->execute();
+          $stmt->bind_result($id_blog, $titel, $artikel, $datuminvoer, $categorie);
+          $one_blog = "";
+          $one_blog .= "<table>";
+
+          while ($stmt->fetch()) {
+              $one_blog .= "<th colspan='2'>$titel</th>";
+              $one_blog .= "<tr><td>Datum publicatie: $datuminvoer</td><td>Categorie: $categorie</td></tr>";
+              $one_blog .= "<tr>";
+              $one_blog .= "<td colspan='2'>$artikel</td>";
+              $one_blog .= "</tr>";
+          }
+
+          $one_blog .= "</table>";
+
+          $stmt->close();
+          return $one_blog;
+      }
+
+
+      function get_comments($id_blog) {
+          // Laat de commentaren bij een blog zien
+          $db = dbconnect();
+
+          $stmt = $db->prepare("SELECT commentaren.naam, commentaren.commentaar
+                                FROM commentaren JOIN Blogs ON Blogs.id = commentaren.id_blog
+                                WHERE commentaren.id_blog = $id_blog
+                                ORDER BY commentaren.id;");
+
+          $stmt->execute();
+          $stmt->bind_result($naam, $commentaar);
+          $commentaren = "<p>Commentaren van lezers:</p>";
+
+
+          while ($stmt->fetch()) {
+              $commentaren .= "<p><table>";
+              $commentaren .= "<tr><td>Commentaar van: $naam</td></tr>";
+              $commentaren .= "<tr><td>$commentaar</td></tr>";
+              $commentaren .= "</table></p>";
+          }
+
+          $stmt->close();
+          return $commentaren;
+      }
+
+      function commentaar_invoeren($id_blog, $naam, $commentaar) {
+
+          $db = dbconnect();
+
+          $stmt = $db->prepare("INSERT INTO commentaren (id_blog, naam, commentaar) VALUES (?, ?, ?)");
+          $stmt->bind_param("sss", $id_blog, $naam, $commentaar);
+          $stmt->execute();
+          //echo "<p>Commentaar toegevoegd.</p>";
+          $stmt->close();
+      }
 
       $categoriekeuzemenu = get_categories($thisfile);
+      $comments = "";
+      $link_naar_secties = "<h3><a href=\"CMSbackend_002.php\">Naar administratie aan de achterkant</a></h3>";
 
       if (isset($_GET['cat_id'])) {
         $id_cat = $_GET['cat_id'];
-        $bloglist = show_blogs_catfiltered($id_cat);
-      } else {
-          $bloglist = show_bloglist();
+        $bloglist = get_blogs_catfiltered($id_cat);
+      } else if (isset($_GET['blog_id'])) {
+          $id_blog = $_GET['blog_id'];
+          setcookie('blog_id',$id_blog);
+          $bloglist = get_onefullblog($id_blog);
+          $comments = get_comments($id_blog);
+          $link_naar_secties = "<h3><a href=\"CMSfrontend_002.php\">Terug naar overzicht</a></h3>";
+        } else if (isset($_POST['commentaar'])) {
+            $commentaar = $_POST['commentaar'];
+            $naam = $_POST['naam'];
+            $id_blog = $_COOKIE['blog_id'];
+
+            commentaar_invoeren($id_blog, $naam, $commentaar);
+            $bloglist = get_onefullblog($id_blog);
+            $comments = get_comments($id_blog);
+        } else {
+            $bloglist = get_bloglist($thisfile);
       }
+
       ?>
 
       <div id="linkerkolom">
         <?php
           echo $categoriekeuzemenu;
+          echo $link_naar_secties;
         ?>
       </div>
       <div id="rechterkolom">
         <?php
           echo $bloglist;
+          echo $comments;
         ?>
-        <h3><a href="CMSbackend_002.php">Naar administratie aan de achterkant</a></h3>
+        <form id="commentaarinvoer" method="post" action="<?php echo $thisfile ?>">
+          Naam: <input id="naam" name="naam" type="text" value="anoniem" required>
+        </form>
+        <textarea id="commentaar" rows="5" cols="80" name="commentaar" form="commentaarinvoer">
+Voer een commentaar in...</textarea>
+        <input id="sendButton" name="submit" type="submit" value="Verstuur" form="commentaarinvoer">
       </div>
-        <!-- <form id="categoriekeuze" method="post" action="">
-          <br />Filter blogs op categorie: <select name="categorie"> -->
-
-      <!--    </select>
-          </form>
-        <input id="sendButton" name="submit" type="submit" value="Verstuur" form="categoriekeuze"> -->
-
 
     <script src="CMSfrontend_002.js"></script>
   </body>

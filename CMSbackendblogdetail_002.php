@@ -144,16 +144,21 @@
     ?>
 
     <form id="artikelinvoer" method="post" action="<?php echo $thisfile; ?>">
-Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="<?php echo $titel; ?>" required>
+Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="<?php echo $titel; ?>" title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
+Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
+Typ '/mvg' in om 'Met vriendelijke groet' in te voeren" required>
 Categorie: <select name="categorie">
               <?php echo $cat_keuze_menu ?>
            </select>
     </form>
-    <textarea id="editor" rows="5" cols="80" name="artikel" form="artikelinvoer"
-    title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
-Typ '/ag' in om 'Agus Judistira' in te voeren">
+      <textarea id="editor" rows="5" cols="80" name="artikel" form="artikelinvoer"
+      title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
+Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
+Typ '/mvg' in om 'Met vriendelijke groet' in te voeren">
 <?php echo $artikel ?>
-    </textarea>
+      </textarea>
     <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
 
     <h3><a href="CMSbackend_002.php">Terug naar blog administratie</a></h3>
