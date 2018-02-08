@@ -151,7 +151,7 @@
           if (comments_allowed($blog_id)) {
 
               $input_tag = "<input type=\"radio\" name=\"commentaar_toegestaan\" value=\"1\" checked=\"checked\"> Commentaar toegestaan<br>" .
-                           "<input type=\"radio\" name=\"commentaar_toegestaan\" value=\"0\"> Commentaar geblokkeerd<br>";
+                           "<input type=\"radio\" name=\"commentaar_toegestaan\" value=\"0\"> Commentaar uitgeschakeld<br>";
 
               //$input_tag = "<p><input type=\"checkbox\" name=\"commentaar_toegestaan\" value=\"0\" checked=\"checked\">Commentaren toegestaan</p>";
               //$input_tag = "<p><input id=\"commentaar_toegestaan\" type=\"checkbox\" name=\"commentaar_toegestaan\" value=\"0\" checked=\"checked\">Commentaren toegestaan</p>";
