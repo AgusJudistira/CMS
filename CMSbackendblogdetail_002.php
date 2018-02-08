@@ -6,7 +6,6 @@
     <link rel="stylesheet" type="text/css" href="CMSbackend_002.css" />
   </head>
   <body>
-    <h1>Blog details</h1>
     <?php
       require_once "dbconnect.php";
       $thisfile = $_SERVER['PHP_SELF'];
@@ -60,7 +59,7 @@
 
           $stmt = $db->prepare("UPDATE Blogs SET titel='$titel', artikel='$artikel'
                                 WHERE id = $blog_id");
-          //$stmt->bind_param("ss", $blogtitel, $artikel);
+
           $stmt->execute();
 
           echo "<p>Blog bijgewerkt.</p>";
@@ -78,7 +77,6 @@
 
           return ($stmt->num_rows == 0);
       }
-
 
       function categorie_toevoegen($blog_id, $category_id) {
           $cat_id = number_format($category_id);
@@ -113,9 +111,8 @@
           while ($stmt->fetch()) {
               $commentaren .= "<p><table>";
               $commentaren .= "<tr><td>Commentaar van: $naam</td><td>";
-              //$commentaren .= "<input id='invisible-data' name='verwijder-id' type='text' value='$commentaar_id' form='commentaren-form'></div>";
               $commentaren .= "<input id='deleteButton' name='verwijder' type='submit' value='Verwijder (#$commentaar_id)' form='commentaren-form'></td></tr>";
-              $commentaren .= "<tr><td>$commentaar</td></tr>";
+              $commentaren .= "<tr><td colspan='2'>$commentaar</td></tr>";
               $commentaren .= "</table></p>";
           }
           $commentaren .= "</form>";
@@ -124,13 +121,69 @@
       }
 
       function verwijder_commentaar($commentaar_id) {
-        $db = dbconnect();
+          $db = dbconnect();
 
-        $stmt = $db->prepare("DELETE FROM commentaren
-                              WHERE commentaren.id = $commentaar_id;");
+          $stmt = $db->prepare("DELETE FROM commentaren
+                                WHERE commentaren.id = $commentaar_id;");
 
-        $stmt->execute();
-        $stmt->close();
+          $stmt->execute();
+          $stmt->close();
+      }
+
+
+      function comments_allowed($blog_id) {
+          $db = dbconnect();
+          $stmt = $db->prepare("SELECT commentaar_toegestaan
+                                FROM Blogs
+                                WHERE id = $blog_id;");
+
+          $stmt->execute();
+          $stmt->bind_result($commentaar_toegestaan);
+          $stmt->fetch();
+          //echo "<p>in comments_allowed($blog_id)- commentaar_toegestaan: $commentaar_toegestaan</p>";
+          return $commentaar_toegestaan;
+      }
+
+
+      function get_comments_allowed($blog_id, $thisfile) {
+          //echo "in get_comments_allowed";
+
+          if (comments_allowed($blog_id)) {
+
+              $input_tag = "<input type=\"radio\" name=\"commentaar_toegestaan\" value=\"1\" checked=\"checked\"> Commentaar toegestaan<br>" .
+                           "<input type=\"radio\" name=\"commentaar_toegestaan\" value=\"0\"> Commentaar geblokkeerd<br>";
+
+              //$input_tag = "<p><input type=\"checkbox\" name=\"commentaar_toegestaan\" value=\"0\" checked=\"checked\">Commentaren toegestaan</p>";
+              //$input_tag = "<p><input id=\"commentaar_toegestaan\" type=\"checkbox\" name=\"commentaar_toegestaan\" value=\"0\" checked=\"checked\">Commentaren toegestaan</p>";
+
+          } else {
+
+              $input_tag = "<input type=\"radio\" name=\"commentaar_toegestaan\" value=\"1\"> Commentaar toegestaan<br>" .
+                           "<input type=\"radio\" name=\"commentaar_toegestaan\" value=\"0\" checked=\"checked\"> Commentaar uitgeschakeld<br>";
+              //$input_tag = "<p><input id=\"commentaar_toegestaan\" type=\"checkbox\" name=\"commentaar_toegestaan\" value=\"1\">Commentaren toegestaan</p>";
+
+          }
+          $comment_allowance_form = "<form id=\"comment-checkbox\" name=\"comment-checkbox\" method=\"post\" action=\"$thisfile\" >";
+          $comment_allowance_form .= $input_tag;
+          $comment_allowance_form .= "</form>";
+
+          return $comment_allowance_form;
+      }
+
+      function commentaar_toegestaan_bijwerken($blog_id, $checkbox_value) {
+          $db = dbconnect();
+          /*
+          echo "UPDATE Blogs SET commentaar_toegestaan = $checkbox_value
+                                WHERE id = $blog_id";
+          */
+          $stmt = $db->prepare("UPDATE Blogs SET commentaar_toegestaan=$checkbox_value
+                                WHERE id = $blog_id");
+
+          $stmt->execute();
+
+          //echo "<p>Commentaar toegestaan bijgewerkt.</p>";
+
+          $stmt->close();
       }
 
       $titel = "";
@@ -150,25 +203,37 @@
         verwijder_commentaar($commentaar_id);
       }
 
-      if (isset($_POST['submit'])) {
-        $artikel = $_POST['artikel'];
-        $titel = $_POST['blogtitel'];
-        $cat_id = $_POST['categorie'];
+      /*
+      echo "\$_POST['commentaar_toegestaan']: " . $_POST['commentaar_toegestaan'] . "<br />";
+      echo "\$_POST['comment-checkbox']: " . $_POST['commentaar_checkbox'] . "<br />";
+      */
 
-        blog_bijwerken($blog_id, $titel, $artikel);
-        categorie_toevoegen($blog_id, $cat_id);
+      if (isset($_POST['commentaar_toegestaan'])) {
+          $checkbox_value = $_POST['commentaar_toegestaan'];
+          commentaar_toegestaan_bijwerken($blog_id, $checkbox_value);
+      } else if (isset($_POST['submit'])) {
+
+                $artikel = $_POST['artikel'];
+                $titel = $_POST['blogtitel'];
+                $cat_id = $_POST['categorie'];
+
+                blog_bijwerken($blog_id, $titel, $artikel);
+                categorie_toevoegen($blog_id, $cat_id);
       }
 
       $cat_keuze_menu = get_categories($blog_id);
       $blog_details = get_one_blog($blog_id);
       $commentaren = get_comments($blog_id);
+      $commentaar_toegestaan = get_comments_allowed($blog_id, $thisfile);
     ?>
     <div id="linkerkolom">
         <h3><a href="CMSbackend_002.php">Terug naar blog administratie</a></h3>
     </div>
     <div id="rechterkolom">
+      <h1>Blog details</h1>
       <?php
         echo $blog_details;
+        echo $commentaar_toegestaan;
         echo $commentaren;
         echo "<br />";
       ?>

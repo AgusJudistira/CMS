@@ -23,18 +23,12 @@ table, th, td {
 #linkerkolom {
   float: left;
   padding: 10px;
+  width: 25%;
 }
 
 #rechterkolom {
   float: right;
   padding: 10px;
-}
-
-.left {
-  width: 25%;
-}
-
-.right {
   width: 75%;
 }
 

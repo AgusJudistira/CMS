@@ -116,9 +116,26 @@
       }
 
 
+      function comments_allowed($id_blog) {
+          $db = dbconnect();
+          $stmt = $db->prepare("SELECT commentaar_toegestaan
+                                FROM Blogs
+                                WHERE Blogs.id = $id_blog;");
+
+          $stmt->execute();
+          $stmt->bind_result($commentaar_toegestaan);
+          $stmt->fetch();
+          return $commentaar_toegestaan;
+      }
+
+
       function get_comments($id_blog, $thisfile) {
           // Laat de commentaren bij een blog zien
           $db = dbconnect();
+
+          if (!comments_allowed($id_blog)) {
+            return "<p>Commentaren zijn voor dit artikel uitgeschakeld.</p>";
+          }
 
           $stmt = $db->prepare("SELECT commentaren.naam, commentaren.commentaar
                                 FROM commentaren JOIN Blogs ON Blogs.id = commentaren.id_blog
@@ -136,7 +153,7 @@
               $commentaren .= "<tr><td>$commentaar</td></tr>";
               $commentaren .= "</table></p>";
           }
-          
+
           $commentaren .= "<form id='commentaarinvoer' method='post' action='$thisfile'>";
           $commentaren .= "Naam: <input id='naam' name='naam' type='text' value='anoniem' required>";
           $commentaren .= "</form>";
@@ -166,17 +183,19 @@
       $link_naar_secties = "<h3><a href=\"CMSbackend_002.php\">Naar administratie aan de achterkant</a></h3>";
 
       if (isset($_GET['cat_id'])) {
+        // als er een lijst van blogs opgevraagd wordt van een bepaalde categorie
         $id_cat = $_GET['cat_id'];
         $bloglist = get_blogs_catfiltered($id_cat);
 
       } else if (isset($_GET['blog_id'])) {
-          //echo "Is hier terecht gekomen";
+          // als er gefocust wordt op een blog
           $id_blog = $_GET['blog_id'];
           setcookie('blog_id',$id_blog);
           $bloglist = get_onefullblog($id_blog);
           $comments = get_comments($id_blog, $thisfile);
           $link_naar_secties = "<h3><a href=\"CMSfrontend_002.php\">Terug naar overzicht</a></h3>";
         } else if (isset($_POST['commentaar'])) {
+            // als er net een commentaar op een blog gesubmit wordt
             $commentaar = $_POST['commentaar'];
             $naam = $_POST['naam'];
             $id_blog = $_COOKIE['blog_id'];
@@ -184,7 +203,9 @@
             commentaar_invoeren($id_blog, $naam, $commentaar);
             $bloglist = get_onefullblog($id_blog);
             $comments = get_comments($id_blog, $thisfile);
+            $link_naar_secties = "<h3><a href=\"CMSfrontend_002.php\">Terug naar overzicht</a></h3>";
         } else {
+            // een overzicht van alle blogs wordt getoond
             $bloglist = get_bloglist($thisfile);
       }
 
