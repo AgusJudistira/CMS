@@ -251,18 +251,21 @@
 
     <table>
     <form id="artikelinvoer" method="post" action="<?php echo $thisfile; ?>" onsubmit="javascript: return verwerkArtikel();">
-        <tr><td>Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="<?php echo $titel; ?>" title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+        <tr><td colspan='2'><h2>Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="<?php echo $titel; ?>" title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
 Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
 Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
-Typ '/mvg' in om 'Met vriendelijke groet' in te voeren" required>
-            <td>Categorieen: <?php echo $categorie ?></td>
+Typ '/mvg' in om 'Met vriendelijke groet' in te voeren" required></h2>
             <tr>
-                <td>Datuminvoer: <?php echo $datuminvoer ?><br />Datumupdate: <?php echo $datumupdate ?></td>
+                <td>Categorieen: <?php echo $categorie ?></td>
+                <td>Datuminvoer: <?php echo $datuminvoer ?></td>
+            </tr>
+            <tr>
                 <td>Categorie toevoegen:
                     <select name="categorie">
                         <?php echo $cat_keuze_menu ?>
                     </select>
                 </td>
+                <td>Datumupdate: <?php echo $datumupdate ?></td>
             </tr>
     </form>
         <tr><td colspan='2'>
