@@ -15,5 +15,6 @@ table, th, td {
 }
 
 .categorie:hover {
-  background-color: red;
+  background-color: black;
+  color: white;
 }
