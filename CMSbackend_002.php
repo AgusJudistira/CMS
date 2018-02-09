@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>CMS Backend</title>
     <link rel="stylesheet" type="text/css" href="CMSbackend_002.css" />
+    <link rel="stylesheet" type="text/css" href="wysiwyg-editor.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
   <body>
     <h1>Blog administratie</h1>
@@ -112,8 +114,18 @@
       </div>
       <div id="rechterkolom">
         <?php echo $bloglist; ?>
-        <br />
-        <form id="artikelinvoer" method="post" action="<?php echo $thisfile ?>">
+        <p>
+
+          <button onclick="underline()" style="font-size:24px"><i class="material-icons">format_underlined</i></button>
+          <button onclick="bolden()" style="font-size:18px"><i class="material-icons">format_bold</i></button>
+          <button onclick="italic()" style="font-size:18px"><i class="material-icons">format_italic</i></button>
+          <button onclick="insertImage()" style="font-size:18px"><i class="material-icons">insert_photo</i></button>
+          <button onclick="link()" style="font-size:18px"><i class="material-icons">insert_link</i></button>
+          <!-- <button onclick="link()">Link</button> -->
+          <button onclick="displayhtml()" style="font-size:18px">Toon HTML</button>
+        </p>
+
+        <form id="artikelinvoer" method="post" action="<?php echo $thisfile; ?>" onsubmit="javascript: return verwerkArtikel();">
         Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="" title=
         "Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
   Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
@@ -126,18 +138,22 @@
             ?>
           </select>
         </form>
-        <textarea id="editor" rows="5" cols="80" name="artikel" form="artikelinvoer"
-                  title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+
+        <div id="editor" contenteditable="true" spellcheck="false" title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
 Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
 Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
 Typ '/mvg' in om 'Met vriendelijke groet' in te voeren">
-Voer een blog in...</textarea>
-      <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
+            <p><br />Voer hier een nieuwe blog in...<br /><br /></p>
+        </div>
+        <input id="hidden" type="hidden" name="artikel" value="<?php $artikel ?>" form="artikelinvoer">
+
+        <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
     </div>
   </div>
     <!-- <div id="buffer">
     </div> -->
 
     <script src="CMSbackend_002.js"></script>
+    <script src="wysiwyg-editor.js"></script>
   </body>
 </html>
