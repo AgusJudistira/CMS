@@ -1,9 +1,11 @@
 <!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <head>
-    <meta charset="UTF-8">
-    <title>CMS Backend</title>
-    <link rel="stylesheet" type="text/css" href="CMSbackend_002.css" />
+      <meta charset="UTF-8">
+      <title>CMS Backend</title>
+      <link rel="stylesheet" type="text/css" href="CMSbackend_002.css" />
+      <link rel="stylesheet" type="text/css" href="wysiwyg-editor.css" />
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
   <body>
     <?php
@@ -28,16 +30,16 @@
 
       function get_one_blog($blog_id) {
           //$blog_id = number_format($blog_id);
-          GLOBAL $titel, $artikel;
+          GLOBAL $titel, $artikel, $datuminvoer, $datumupdate, $categorie;
           $db = dbconnect();
 
-          $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.artikel, Blogs.datuminvoer, GROUP_CONCAT(categorienamen.categorienaam SEPARATOR ', ')
+          $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.artikel, Blogs.datuminvoer, Blogs.datumupdate, GROUP_CONCAT(categorienamen.categorienaam SEPARATOR ', ')
                                 FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
                                            LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
                                 WHERE Blogs.id = $blog_id;");
 
           $stmt->execute();
-          $stmt->bind_result($id, $titel, $artikel, $datuminvoer, $categorie);
+          $stmt->bind_result($id, $titel, $artikel, $datuminvoer, $datumupdate, $categorie);
 
           /* fetch values */
           $one_blog = "";
@@ -56,8 +58,9 @@
 
       function blog_bijwerken($blog_id, $titel, $artikel) {
           $db = dbconnect();
+          $datumupdate = date("y-m-d H:m:s");
 
-          $stmt = $db->prepare("UPDATE Blogs SET titel='$titel', artikel='$artikel'
+          $stmt = $db->prepare("UPDATE Blogs SET titel='$titel', artikel='$artikel', datumupdate='$datumupdate'
                                 WHERE id = $blog_id");
 
           $stmt->execute();
@@ -230,33 +233,74 @@
         <h1>Blog details</h1>
         <h3><a href="CMSbackend_002.php">Terug naar blog administratie</a></h3>
     </div>
-    <div id="rechterkolom">      
+    <div id="rechterkolom">
       <?php
-        echo $blog_details;
-        echo $commentaar_toegestaan;
-        echo $commentaren;
-        echo "<br />";
+        //echo $blog_details;
+        //echo "<br />";
       ?>
-    <form id="artikelinvoer" method="post" action="<?php echo $thisfile; ?>">
-Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="<?php echo $titel; ?>" title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+    <p>
+
+      <button onclick="underline()" style="font-size:24px"><i class="material-icons">format_underlined</i></button>
+      <button onclick="bolden()" style="font-size:18px"><i class="material-icons">format_bold</i></button>
+      <button onclick="italic()" style="font-size:18px"><i class="material-icons">format_italic</i></button>
+      <button onclick="insertImage()" style="font-size:18px"><i class="material-icons">insert_photo</i></button>
+      <button onclick="link()" style="font-size:18px"><i class="material-icons">insert_link</i></button>
+      <!-- <button onclick="link()">Link</button> -->
+      <button onclick="displayhtml()" style="font-size:18px">Toon HTML</button>
+    </p>
+
+    <table>
+    <form id="artikelinvoer" method="post" action="<?php echo $thisfile; ?>" onsubmit="javascript: return verwerkArtikel();">
+        <tr><td>Blogtitel: <input id="blogtitel" name="blogtitel" type="text" value="<?php echo $titel; ?>" title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
 Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
 Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
 Typ '/mvg' in om 'Met vriendelijke groet' in te voeren" required>
-Categorie: <select name="categorie">
-              <?php echo $cat_keuze_menu ?>
-           </select>
+            <td>Categorieen: <?php echo $categorie ?></td>
+            <tr>
+                <td>Datuminvoer: <?php echo $datuminvoer ?><br />Datumupdate: <?php echo $datumupdate ?></td>
+                <td>Categorie toevoegen:
+                    <select name="categorie">
+                        <?php echo $cat_keuze_menu ?>
+                    </select>
+                </td>
+            </tr>
     </form>
+        <tr><td colspan='2'>
+    <!-- Make it content editable attribute true so that we can edit inside the div tag and also enable execCommand to edit content inside it.-->
+            <div id="editor" contenteditable="true" spellcheck="false" title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
+Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
+Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
+Typ '/mvg' in om 'Met vriendelijke groet' in te voeren">
+                <?php echo $artikel ?>
+            </div>
+        </td></tr>
+        <input id="hidden" type="hidden" name="artikel" value="<?php $artikel ?>" form="artikelinvoer">
+    </table>
+    <p>
+        <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
+    </p>
+    <div class="codeoutput">
+        <!-- <pre> tags reserves whitespace and newline characters. -->
+        <p class="htmloutput">
+        </p>
+    </div>
+
+    <?php
+    echo $commentaar_toegestaan;
+    echo $commentaren;
+    ?>
+    <!--
       <textarea id="editor" rows="5" cols="80" name="artikel" form="artikelinvoer"
       title="Typ '/cg' in om 'Code Gorilla' in te voeren&#013;&#010;
 Typ '/ag' in om 'Agus Judistira' in te voeren&#013;&#010;
 Typ '/nl' in om 'Nederland' in te voeren&#013;&#010;
 Typ '/mvg' in om 'Met vriendelijke groet' in te voeren">
-<?php echo $artikel ?>
-      </textarea>
-    <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
-</div>
 
+</textarea>
+
+</div> -->
 
     <script src="CMSbackend_002.js"></script>
+    <script src="wysiwyg-editor.js"></script>
   </body>
 </html>

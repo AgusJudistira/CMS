@@ -13,6 +13,11 @@ commentAllowanceForm.onchange = function(ev) {
     this.submit();
 }
 
+function verwerkArtikel() {
+  document.getElementById("hidden").value = document.getElementById("editor").innerHTML;
+  return true;
+}
+
 editor.onkeyup = function(e) {
 
   if (e.keyCode == 191) {
@@ -21,10 +26,10 @@ editor.onkeyup = function(e) {
   else {
     buffer += String.fromCharCode(e.keyCode).toLowerCase();
   }
-
-  //console.log("buffer = "+buffer);
-  //console.log("Cursor pos:"+this.selectionStart);
-
+/*
+  console.log("buffer = "+buffer);
+  console.log("Cursor pos:"+this.selectionStart);
+*/
   var startPos = this.selectionStart;
 
   for (var i=0; i < afkortingen.length; i++) {
@@ -35,13 +40,14 @@ editor.onkeyup = function(e) {
       //alert('afkorting gevonden');
       var startPos = this.selectionStart;
 
-      this.value = this.value.replace(afkorting, voluit);
-      /*
+      //this.value = this.value.replace(afkorting, voluit);
+      this.innerHTML = this.innerHTML.replace(afkorting, voluit);
+/*
       console.log("afkorting:"+afkorting);
       console.log("afkorting.length:"+afkorting.length);
       console.log("voluit:"+voluit);
       console.log("voluit.length:"+voluit.length);
-      */
+*/
       this.selectionEnd = startPos + voluit.length - afkorting.length;
       break;
     }

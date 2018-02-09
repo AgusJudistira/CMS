@@ -15,7 +15,6 @@ function getBloglistWithCat(cat_id) {
     xhttp.onreadystatechange = function() {
 
       if (this.readyState == 4 && this.status == 200) {
-
           rechterkolom.innerHTML = this.responseText;
       }
     };

@@ -1,7 +1,7 @@
 <?php
 require_once "dbconnect.php"; // bestand met de login gegevens voor de database
 $id_cat = $_GET['cat_id'];
-get_blogs_catfiltered($id_cat);
+echo get_blogs_catfiltered($id_cat);
 
 function get_blogs_catfiltered($id_cat) {
     $db = dbconnect();
@@ -20,7 +20,7 @@ function get_blogs_catfiltered($id_cat) {
                               WHERE categorietoekenning.id_categorie = $id_cat
                               ORDER BY Blogs.datuminvoer DESC;");
     }
-    
+
     $stmt->execute();
     $stmt->bind_result($id_blog, $titel, $datuminvoer, $categorie);
 
@@ -36,6 +36,6 @@ function get_blogs_catfiltered($id_cat) {
     $bloglist .= "</table>";
 
     $stmt->close();
-    echo $bloglist;
+    return $bloglist;
 }
 ?>

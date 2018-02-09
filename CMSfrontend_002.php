@@ -93,19 +93,19 @@
           // Laat een volle blog zien
           $db = dbconnect();
 
-          $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.artikel, Blogs.datuminvoer, GROUP_CONCAT(categorienamen.categorienaam SEPARATOR ', ')
+          $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.artikel, Blogs.datuminvoer, Blogs.datumupdate, GROUP_CONCAT(categorienamen.categorienaam SEPARATOR ', ')
                                 FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
                                            LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
                                 WHERE Blogs.id = $id_blog;");
 
           $stmt->execute();
-          $stmt->bind_result($id_blog, $titel, $artikel, $datuminvoer, $categorie);
+          $stmt->bind_result($id_blog, $titel, $artikel, $datuminvoer, $datumupdate, $categorie);
           $one_blog = "";
           $one_blog .= "<table>";
 
           while ($stmt->fetch()) {
-              $one_blog .= "<th colspan='2'>$titel</th>";
-              $one_blog .= "<tr><td>Datum publicatie: $datuminvoer</td><td>Categorie: $categorie</td></tr>";
+              $one_blog .= "<th colspan='2'><h2>$titel</h2></th>";
+              $one_blog .= "<tr><td>Datum publicatie: $datuminvoer<br />Datum update: $datumupdate</td><td>Categorie: $categorie</td></tr>";
               $one_blog .= "<tr>";
               $one_blog .= "<td colspan='2'>$artikel</td>";
               $one_blog .= "</tr>";
