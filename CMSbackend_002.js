@@ -7,22 +7,10 @@ var afkortingen = [['/cg','Code Gorilla'],
                    ['/nl', 'Nederland']];
 
 var commentAllowanceForm = document.getElementById('comment-checkbox');
-//var commentAllowed = document.getElementById('commentaar_toegestaan');
-
 
 commentAllowanceForm.onchange = function(ev) {
     //ev.preventDefault();
-
     this.submit();
-
-/*
-    if (commentAllowed.checked) {
-      commentAllowed.checked = false;
-    }
-    else {
-      commentAllowed.checked = true;
-    }
-*/
 }
 
 editor.onkeyup = function(e) {
@@ -59,7 +47,7 @@ editor.onkeyup = function(e) {
     }
   }
 
-  if (buffer.length > 7) {
+  if (buffer.length > 7) { //een afkorting mag max 7 karakters lang zijn
     buffer = buffer.substring(buffer.length - 7);
   }
 }

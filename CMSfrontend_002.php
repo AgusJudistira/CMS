@@ -21,11 +21,12 @@
         $stmt->execute();
         $stmt->bind_result($id, $categorienaam);
 
-        $keuzemenu .= "<div><h4><a href=\"$thisfile\">Alle categorieen</a></h4></div>";
+        $keuzemenu .= "<div class=\"categorie\" data-value=\"0\"><h4>Alle categorieen</h4></div>";
+        //$keuzemenu .= "<div><h4><a href=\"$thisfile\">Alle categorieen</a></h4></div>";
 
         while ($stmt->fetch()) {
-          // $keuzemenu .= "<option value='$id'>$categorienaam</option>";
-          $keuzemenu .= "<div><a href=\"$thisfile?cat_id=$id\">$categorienaam</a></div>";
+            $keuzemenu .= "<div class=\"categorie\" data-value=\"$id\">$categorienaam</div>";
+          //$keuzemenu .= "<div><a href=\"$thisfile?cat_id=$id\">$categorienaam</a></div>";
         }
         return $keuzemenu;
       }
@@ -79,6 +80,7 @@
           while ($stmt->fetch()) {
               $bloglist .= "<tr>";
               $bloglist .= "<td><a href=\"$thisfile?blog_id=$id_blog\">$titel</a></td><td>$datuminvoer</td><td>$categorie</td>";
+              //$bloglist .= "<td>$titel</td><td>$datuminvoer</td><td>$categorie</td>";
               $bloglist .= "</tr>";
           }
           $bloglist .= "</table>";
@@ -182,12 +184,12 @@
       $comments = "";
       $link_naar_secties = "<h3><a href=\"CMSbackend_002.php\">Naar administratie aan de achterkant</a></h3>";
 
-      if (isset($_GET['cat_id'])) {
+/*      if (isset($_GET['cat_id'])) {
         // als er een lijst van blogs opgevraagd wordt van een bepaalde categorie
         $id_cat = $_GET['cat_id'];
-        $bloglist = get_blogs_catfiltered($id_cat);
+        $bloglist = get_blogs_catfiltered($id_cat); */
 
-      } else if (isset($_GET['blog_id'])) {
+      if (isset($_GET['blog_id'])) {
           // als er gefocust wordt op een blog
           $id_blog = $_GET['blog_id'];
           setcookie('blog_id',$id_blog);
@@ -207,6 +209,7 @@
         } else {
             // een overzicht van alle blogs wordt getoond
             $bloglist = get_bloglist($thisfile);
+            //$bloglist = "Geen blogs";
       }
 
       ?>

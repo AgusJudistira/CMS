@@ -227,10 +227,10 @@
       $commentaar_toegestaan = get_comments_allowed($blog_id, $thisfile);
     ?>
     <div id="linkerkolom">
+        <h1>Blog details</h1>
         <h3><a href="CMSbackend_002.php">Terug naar blog administratie</a></h3>
     </div>
-    <div id="rechterkolom">
-      <h1>Blog details</h1>
+    <div id="rechterkolom">      
       <?php
         echo $blog_details;
         echo $commentaar_toegestaan;
