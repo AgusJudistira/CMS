@@ -135,6 +135,7 @@
 
 
       function comments_allowed($blog_id) {
+          // vaststellen of commentaren voor deze blog toegestaan is
           $db = dbconnect();
           $stmt = $db->prepare("SELECT commentaar_toegestaan
                                 FROM Blogs
@@ -175,16 +176,11 @@
 
       function commentaar_toegestaan_bijwerken($blog_id, $checkbox_value) {
           $db = dbconnect();
-          /*
-          echo "UPDATE Blogs SET commentaar_toegestaan = $checkbox_value
-                                WHERE id = $blog_id";
-          */
+
           $stmt = $db->prepare("UPDATE Blogs SET commentaar_toegestaan=$checkbox_value
                                 WHERE id = $blog_id");
 
           $stmt->execute();
-
-          //echo "<p>Commentaar toegestaan bijgewerkt.</p>";
 
           $stmt->close();
       }
@@ -246,7 +242,10 @@
       <button onclick="insertImage()" style="font-size:18px"><i class="material-icons">insert_photo</i></button>
       <button onclick="link()" style="font-size:18px"><i class="material-icons">insert_link</i></button>
       <!-- <button onclick="link()">Link</button> -->
+      <button onclick="inserthtml()" style="font-size:18px">HTML invoegen</button>
       <button onclick="displayhtml()" style="font-size:18px">Toon HTML</button>
+
+
     </p>
 
     <table>

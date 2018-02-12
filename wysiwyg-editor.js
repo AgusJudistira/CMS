@@ -29,6 +29,11 @@ function insertImage() {
     var img_src = prompt("Geef de link van de afbeelding","link naar de afbeelding");
     document.execCommand("insertImage", false, img_src);
 }
+
+function inserthtml() {
+    var html_code = prompt("Geef de HTML code","html code");
+    document.execCommand("insertHTML", false, html_code);
+}
 //makes the selected text as hyperlink.
 function link()
 {

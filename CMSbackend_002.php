@@ -60,16 +60,15 @@
       }
 
 
-      function insert_blog($blogtitel, $artikel) {
+      function insert_blog($blogtitel, $artikel, $commentaar_toegestaan) {
 
           $db = dbconnect();
 
-          $stmt = $db->prepare("INSERT INTO Blogs (titel, artikel) VALUES (?, ?)");
-          $stmt->bind_param("ss", $blogtitel, $artikel);
+          $stmt = $db->prepare("INSERT INTO Blogs (titel, artikel, commentaar_toegestaan) VALUES (?, ?, ?)");
+          $stmt->bind_param("sss", $blogtitel, $artikel, $commentaar_toegestaan);
           $stmt->execute();
 
           $lastid = mysqli_insert_id($db);
-
 
           echo "<p>Blog toegevoegd.</p>";
           return $lastid;
@@ -97,8 +96,9 @@
           $artikel = $_POST['artikel'];
           $blogtitel = $_POST['blogtitel'];
           $cat_id = $_POST['categorie'];
+          $commentaar_toegestaan = $_POST['commentaar_toegestaan'];
 
-          $lastid = insert_blog($blogtitel, $artikel);
+          $lastid = insert_blog($blogtitel, $artikel, $commentaar_toegestaan);
           insert_category($lastid, $cat_id);
 
           $bloglist = get_blogsandcats();
@@ -120,8 +120,10 @@
           <button onclick="bolden()" style="font-size:18px"><i class="material-icons">format_bold</i></button>
           <button onclick="italic()" style="font-size:18px"><i class="material-icons">format_italic</i></button>
           <button onclick="insertImage()" style="font-size:18px"><i class="material-icons">insert_photo</i></button>
+
           <button onclick="link()" style="font-size:18px"><i class="material-icons">insert_link</i></button>
           <!-- <button onclick="link()">Link</button> -->
+          <button onclick="inserthtml()" style="font-size:18px">HTML invoegen</button>
           <button onclick="displayhtml()" style="font-size:18px">Toon HTML</button>
         </p>
 
@@ -147,11 +149,18 @@ Typ '/mvg' in om 'Met vriendelijke groet' in te voeren">
         </div>
         <input id="hidden" type="hidden" name="artikel" value="<?php $artikel ?>" form="artikelinvoer">
 
-        <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
+          <div>
+              <p><input type="radio" name="commentaar_toegestaan" value="1" checked="checked" form="artikelinvoer">Commentaar toegestaan</input></p>
+              <p><input type="radio" name="commentaar_toegestaan" value="0" form="artikelinvoer">Commentaar uitgeschakeld</input></p>
+          </div>
+          <div style="display: inline-flex">
+              <input id="sendButton" name="submit" type="submit" value="Verstuur" form="artikelinvoer">
+          </div>
     </div>
   </div>
-    <!-- <div id="buffer">
-    </div> -->
+    <div id="comment-checkbox">
+
+    </div>
 
     <script src="CMSbackend_002.js"></script>
     <script src="wysiwyg-editor.js"></script>

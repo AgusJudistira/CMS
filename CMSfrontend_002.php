@@ -31,20 +31,21 @@
         return $keuzemenu;
       }
 
-      // toon blogs gefilterd op een bepaalde categorie
+
+/*    //toon blogs gefilterd op een bepaalde categorie (deze is al vervangen door een AJAX versie)
       function get_blogs_catfiltered($id_cat) {
           $db = dbconnect();
           $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.datuminvoer, categorienamen.categorienaam
                                 FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
                                            LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
                                 WHERE categorietoekenning.id_categorie = $id_cat
-                                ORDER BY Blogs.datuminvoer DESC");
+                                ORDER BY Blogs.datuminvoer DESC;");
 
           $stmt->execute();
           $stmt->bind_result($id_blog, $titel, $datuminvoer, $categorie);
 
           $bloglist = "";
-          // echo "<div id='rechterkolom'>";
+          
           $bloglist .= "<table>";
           $bloglist .= "<th>Titel</th><th>Datum publicatie</th><th>Categorie</th>";
           while ($stmt->fetch()) {
@@ -54,12 +55,10 @@
           }
           $bloglist .= "</table>";
 
-          //echo "</div>";
-
           $stmt->close();
           return $bloglist;
       }
-
+*/
 
       function get_bloglist($thisfile) {
 
@@ -178,13 +177,54 @@
           $stmt->close();
       }
 
-      $thisfile = $_SERVER['PHP_SELF'];
+      function maak_zoek_functie() {
+          $zoek_formulier = "";
+          $zoek_formulier .= "<form id='frontend-zoekform' method='get' action='$thisfile'>";
+          $zoek_formulier .= "<b>Artikels opzoeken: </b><input id='zoekstring' name='zoekstring' type='text' size='40'></input>";
+          $zoek_formulier .= " <input type='submit' value='Opzoeken'>";
+          $zoek_formulier .= "</form><br />";
 
+          return $zoek_formulier;
+      }
+
+      function zoek_blogs($zoekstring) {
+            $db = dbconnect();
+
+            $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.datuminvoer, GROUP_CONCAT(categorienamen.categorienaam SEPARATOR ', ')
+                                FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
+                                        LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
+                                WHERE Blogs.titel LIKE '%$zoekstring%' OR
+                                    Blogs.artikel LIKE '%$zoekstring%'
+                                GROUP BY Blogs.titel
+                                ORDER BY Blogs.datuminvoer DESC;");
+            //$stmt->bind_param("ss", $blogtitel, $artikel);
+            $stmt->execute();
+            $stmt->bind_result($id_blog, $titel, $datuminvoer, $categorie);
+
+            $bloglist = "";
+            $bloglist .= "<table>";
+            $bloglist .= "<th>Titel</th><th>Datum publicatie</th><th>Categorie</th>";
+            while ($stmt->fetch()) {
+                $bloglist .= "<tr>";
+                $bloglist .= "<td><a href=\"$thisfile?blog_id=$id_blog\">$titel</a></td><td>$datuminvoer</td><td>$categorie</td>";
+                //$bloglist .= "<td>$titel</td><td>$datuminvoer</td><td>$categorie</td>";
+                $bloglist .= "</tr>";
+            }
+            $bloglist .= "</table>";
+
+            $stmt->close();
+            return $bloglist;
+      }
+
+      $thisfile = $_SERVER['PHP_SELF'];
       $categoriekeuzemenu = get_categories($thisfile);
+      $zoekfunctie = maak_zoek_functie();
       $comments = "";
+
       $link_naar_secties = "<h3><a href=\"CMSbackend_002.php\">Naar administratie aan de achterkant</a></h3>";
 
-/*      if (isset($_GET['cat_id'])) {
+/*      dit stukje is vervangen door een AJAX aanroep 
+        if (isset($_GET['cat_id'])) {
         // als er een lijst van blogs opgevraagd wordt van een bepaalde categorie
         $id_cat = $_GET['cat_id'];
         $bloglist = get_blogs_catfiltered($id_cat); */
@@ -206,10 +246,12 @@
             $bloglist = get_onefullblog($id_blog);
             $comments = get_comments($id_blog, $thisfile);
             $link_naar_secties = "<h3><a href=\"CMSfrontend_002.php\">Terug naar overzicht</a></h3>";
+        } else if (isset($_GET['zoekstring'])) {
+            $zoekstring = $_GET['zoekstring'];
+            $bloglist = zoek_blogs($zoekstring);
         } else {
             // een overzicht van alle blogs wordt getoond
             $bloglist = get_bloglist($thisfile);
-            //$bloglist = "Geen blogs";
       }
 
       ?>
@@ -222,6 +264,7 @@
       </div>
       <div id="rechterkolom">
         <?php
+          echo $zoekfunctie;
           echo $bloglist;
           echo $comments;
         ?>

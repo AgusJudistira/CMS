@@ -1,17 +1,37 @@
 <?php
 require_once "dbconnect.php"; // bestand met de login gegevens voor de database
-$id_cat = $_GET['cat_id'];
-echo get_blogs_catfiltered($id_cat);
+if (isset($_GET['cat_id'])) {
+    $id_cat = $_GET['cat_id'];
+} else {
+    $id_cat = '0';
+}
+
+$output = "";
+$output .= maak_zoek_functie();
+$output .= get_blogs_catfiltered($id_cat);
+echo $output;
+
+
+function maak_zoek_functie() {
+    $zoek_formulier = "";
+    $zoek_formulier .= "<form id='frontend-zoekform' method='get' action='$thisfile'>";
+    $zoek_formulier .= "<b>Artikels opzoeken: </b><input id='zoekstring' name='zoekstring' type='text' size='40'></input>";
+    $zoek_formulier .= " <input type='submit' value='Opzoeken'>";
+    $zoek_formulier .= "</form><br />";
+
+    return $zoek_formulier;
+}
 
 function get_blogs_catfiltered($id_cat) {
+    
     $db = dbconnect();
 
     if ($id_cat == '0') {
         $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.datuminvoer, GROUP_CONCAT(categorienamen.categorienaam SEPARATOR ', ')
-                                FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
-                                           LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
-                                GROUP BY Blogs.titel
-                                ORDER BY Blogs.datuminvoer DESC;");
+                              FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
+                                         LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
+                              GROUP BY Blogs.titel
+                              ORDER BY Blogs.datuminvoer DESC;");
     }
     else {
         $stmt = $db->prepare("SELECT Blogs.id, Blogs.titel, Blogs.datuminvoer, categorienamen.categorienaam
