@@ -14,7 +14,7 @@ table, th, td {
   width: 75%;
 }
 
-.categorie {
-  background-color: red;
-  padding: 8px;
+.categorie:hover {
+  background-color: black;
+  color: white;
 }
