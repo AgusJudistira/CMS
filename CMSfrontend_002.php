@@ -31,7 +31,6 @@
         return $keuzemenu;
       }
 
-
 /*    //toon blogs gefilterd op een bepaalde categorie (deze is al vervangen door een AJAX versie)
       function get_blogs_catfiltered($id_cat) {
           $db = dbconnect();
@@ -194,7 +193,9 @@
                                 FROM Blogs LEFT JOIN categorietoekenning ON Blogs.id = categorietoekenning.id_blog
                                         LEFT JOIN categorienamen ON categorietoekenning.id_categorie = categorienamen.id
                                 WHERE Blogs.titel LIKE '%$zoekstring%' OR
-                                    Blogs.artikel LIKE '%$zoekstring%'
+                                    Blogs.artikel LIKE '%$zoekstring%' OR
+                                  Blogs.inleiding LIKE '%$zoekstring%' OR
+                                   Blogs.subtitel LIKE '%$zoekstring%'
                                 GROUP BY Blogs.titel
                                 ORDER BY Blogs.datuminvoer DESC;");
             //$stmt->bind_param("ss", $blogtitel, $artikel);
