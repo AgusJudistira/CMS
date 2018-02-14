@@ -23,7 +23,7 @@
     
       $editor = "<p>";
 
-      $editor .= "<button onclick='underline()' style='font-size:24px'><i class='material-icons'>format_underlined</i></button>";
+      $editor .= "<button onclick='underline()' style='font-size:18px'><i class='material-icons'>format_underlined</i></button>";
       $editor .= "<button onclick='bolden()' style='font-size:18px'><i class='material-icons'>format_bold</i></button>";
       $editor .= "<button onclick='italic()' style='font-size:18px'><i class='material-icons'>format_italic</i></button>";
       $editor .= "<button onclick='insertImage()' style='font-size:18px'><i class='material-icons'>insert_photo</i></button>";
@@ -108,7 +108,6 @@
         $stmt->close();
         return $bloglist;
       }
-
 
       function insert_blog($blogtitel, $artikel, $commentaar_toegestaan) {
 

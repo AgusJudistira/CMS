@@ -1,5 +1,7 @@
 <?php
 require_once "dbconnect.php"; // bestand met de login gegevens voor de database
+//$thisfile = $_SERVER['PHP_SELF'];
+
 if (isset($_GET['cat_id'])) {
     $id_cat = $_GET['cat_id'];
 } else {
@@ -7,12 +9,12 @@ if (isset($_GET['cat_id'])) {
 }
 
 $output = "";
-$output .= maak_zoek_functie();
-$output .= get_blogs_catfiltered($id_cat);
+$output .= maak_zoek_functie($thisfile);
+$output .= get_blogs_catfiltered($id_cat, $thisfile);
 echo $output;
 
 
-function maak_zoek_functie() {
+function maak_zoek_functie($thisfile) {
     $zoek_formulier = "";
     $zoek_formulier .= "<form id='frontend-zoekform' method='get' action='$thisfile'>";
     $zoek_formulier .= "<b>Artikels opzoeken: </b><input id='zoekstring' name='zoekstring' type='text' size='40'></input>";
@@ -22,7 +24,7 @@ function maak_zoek_functie() {
     return $zoek_formulier;
 }
 
-function get_blogs_catfiltered($id_cat) {
+function get_blogs_catfiltered($id_cat, $thisfile) {
     
     $db = dbconnect();
 

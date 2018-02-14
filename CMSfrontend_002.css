@@ -5,16 +5,72 @@ table, th, td {
 }
 
 #linkerkolom {
+  position: absolute;
+  padding-right: 10px;
+  padding-left: 10px;
+  background-color: lightblue;
   float: left;
   width: 25%;
+  height: 100%;
 }
 
 #rechterkolom {
+  position: absolute;
+  padding-left: 10px;
+  background-color: khaki;
   float: right;
+  left: 25%;
   width: 75%;
+  height: 100%;
 }
 
 .categorie:hover {
   background-color: black;
   color: white;
+  cursor: pointer;
 }
+
+#user-login {
+  color: white;
+  text-align: right;
+  display: none;
+  position: absolute;
+  background-color: darkred;
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 8px 8px 4px rgba(0, 0, 0, 0.5);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  z-index: 9;
+}
+
+#user-login a {
+  color: yellow;
+}
+
+#account-form {
+  color: white;
+  text-align: right;
+  display: block;
+  position: absolute;
+  background-color: darkred;
+  border: 1px solid white;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 8px 8px 4px rgba(0, 0, 0, 0.5);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  z-index: 9;
+}
+
+/*
+#rechterkolom:after {
+  content: "";
+  display: table;
+  clear: both;
+}*/
