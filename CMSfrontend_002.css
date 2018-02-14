@@ -17,6 +17,7 @@ table, th, td {
 #rechterkolom {
   position: absolute;
   padding-left: 10px;
+  padding-top: 10px;
   background-color: khaki;
   float: right;
   left: 25%;
@@ -30,7 +31,7 @@ table, th, td {
   cursor: pointer;
 }
 
-#user-login {
+#user-login, #pwreset-form, #email-form {
   color: white;
   text-align: right;
   display: none;

@@ -16,7 +16,7 @@
         <p>Wachtwoord: <input type="password" name="wachtwoord" required></p>
         <p><input type="submit" value="Inloggen"></p>
         <p><a href="create_account.php">Account aanmaken</a></p>
-        <p><a href="wachtwoord_vergeten.php">Wachtwoord vergeten?</a></p>        
+        <p><a href="reset_password.php">Wachtwoord vergeten?</a></p>        
     </form>
 
     <?php
@@ -25,22 +25,22 @@
     // stop alle bestaande categorieen in een string voor keuzemenu (klaar voor <select> tag)
     function get_categories($thisfile) {
 
-    $keuzemenu = "";
-    $db = dbconnect();
+        $keuzemenu = "";
+        $db = dbconnect();
 
-    $stmt = $db->prepare("SELECT id, categorienaam FROM categorienamen");
+        $stmt = $db->prepare("SELECT id, categorienaam FROM categorienamen");
 
-    $stmt->execute();
-    $stmt->bind_result($id, $categorienaam);
+        $stmt->execute();
+        $stmt->bind_result($id, $categorienaam);
 
-    $keuzemenu .= "<div class=\"categorie\" data-value=\"0\"><h4>Alle categorieen</h4></div>";
-    //$keuzemenu .= "<div><h4><a href=\"$thisfile\">Alle categorieen</a></h4></div>";
+        $keuzemenu .= "<div class=\"categorie\" data-value=\"0\"><h4>Alle categorieen</h4></div>";
+        //$keuzemenu .= "<div><h4><a href=\"$thisfile\">Alle categorieen</a></h4></div>";
 
-    while ($stmt->fetch()) {
-        $keuzemenu .= "<div class=\"categorie\" data-value=\"$id\">$categorienaam</div>";
-        //$keuzemenu .= "<div><a href=\"$thisfile?cat_id=$id\">$categorienaam</a></div>";
-    }
-    return $keuzemenu;
+        while ($stmt->fetch()) {
+            $keuzemenu .= "<div class=\"categorie\" data-value=\"$id\">$categorienaam</div>";
+            //$keuzemenu .= "<div><a href=\"$thisfile?cat_id=$id\">$categorienaam</a></div>";
+        }
+        return $keuzemenu;
     }
 
 /*    //toon blogs gefilterd op een bepaalde categorie (deze is al vervangen door een AJAX versie)
