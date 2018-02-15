@@ -10,7 +10,7 @@
     <?php $thisfile = $_SERVER['PHP_SELF']; ?>
     
     <h1>Welkom op mijn blog!</h1>
-    <form id="user-login" method="post" action="<?php $thisfile?>">
+    <form id="user-login" method="post" action="<?php echo $thisfile?>">
         <h3 align='center'>Gebruikers login</h3>
         <p>E-mail: <input type="text" name="email" required></p>
         <p>Wachtwoord: <input type="password" name="wachtwoord" required></p>
@@ -70,6 +70,33 @@
         return $bloglist;
     }
 */
+
+    function get_monthlist($thisfile) {
+        $db = dbconnect();
+
+        $stmt = $db->prepare("SELECT MONTH(datuminvoer), MONTHNAME(datuminvoer), YEAR(datuminvoer), COUNT(*) 
+                              FROM Blogs GROUP BY MONTH(datuminvoer)
+                              ORDER BY datuminvoer DESC LIMIT 12;");
+        //$stmt->bind_param("ss", $blogtitel, $artikel);
+        $stmt->execute();
+        $stmt->bind_result($maandnummer, $maand, $jaar, $aantal_artikelen);
+
+        $monthlist = "";
+        $monthlist .= "<table>";
+        $monthlist .= "<th>Publicaties in maand:</th><th>Aantal</th>";
+        while ($stmt->fetch()) {
+            if ($aantal_artikelen > 0) {
+                $monthlist .= "<tr class='maandpublicatie' data-value='$maandnummer'>";
+                $monthlist .= "<td>$maand $jaar</td><td>$aantal_artikelen</td>";
+                $monthlist .= "</tr>";
+            }
+        }
+        $monthlist .= "</table>";
+
+        $stmt->close();
+        return $monthlist;
+    }
+
 
     function get_bloglist($thisfile) {
 
@@ -301,6 +328,7 @@
     $comments = "";
     $uitlog_button = "";
     $link_naar_secties = "<h3><a href=\"CMSbackend_002.php\">Naar administratie aan de achterkant</a></h3>";
+    $maanden = get_monthlist($thisfile);
 
 
     if (isset($_GET['blog_id'])) {
@@ -374,6 +402,7 @@
         echo $categoriekeuzemenu;
         echo $inlog_button;
         echo $uitlog_button;
+        echo $maanden;
         echo $link_naar_secties;
         ?>
     </div>

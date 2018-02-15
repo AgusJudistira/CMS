@@ -28,7 +28,13 @@ table, th, td {
 .categorie:hover {
   background-color: black;
   color: white;
-  cursor: pointer;
+  cursor: default;
+}
+
+.maandpublicatie:hover {
+  background-color: black;
+  color: white;
+  cursor: default;
 }
 
 #user-login, #pwreset-form, #email-form {
