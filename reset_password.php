@@ -63,7 +63,7 @@
             $email = $_POST['email'];
             $wwcode = get_oldpass($email);
             if (strlen($wwcode) > 0) {
-                $link = "localhost/" . $thisfile. "?wwcode=$wwcode";                
+                $link = "localhost" . $thisfile. "?wwcode=$wwcode";                
                 $boodschap = "Klik $link om uw wachtwoord te kunnen wijzigen.";                
                 $headers = 'From: <webmaster@cms.com>' . "\r\n";
                 mail($email, "ww reset", $boodschap, $headers);
@@ -82,14 +82,7 @@
             show_emailform();
 
         }
-/*
-        function text_filter($string) {
-            $search  = array('/<p>__<\/p>/', '/([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4})/');
-            $replace = array('<hr />', '<a href="mailto:$1">$1</a>');
-            $processed_string = preg_replace($search, $replace, $string);
-            return $processed_string;
-        }            
-*/
+
         function show_pwresetform() {
             ?>
             <script type="text/javascript">
@@ -108,7 +101,7 @@
             $stmt->execute();
             $stmt->store_result();
             $stmt->fetch();
-            echo "In get_email: email = $email";
+            
             return ($email);
         }
 
