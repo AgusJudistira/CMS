@@ -88,7 +88,7 @@
             while ($stmt->fetch()) {
                 if ($aantal_artikelen > 0) {
                     $monthlist .= "<tr class='maandpublicatie' data-value='$maandnummer'>";
-                    $monthlist .= "<td>$maand $jaar</td><td>$aantal_artikelen</td>";
+                    $monthlist .= "<td>$maand $jaar</td><td align='right'>$aantal_artikelen</td>";
                     $monthlist .= "</tr>";
                 }
             }

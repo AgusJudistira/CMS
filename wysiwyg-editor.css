@@ -1,9 +1,15 @@
-#editor
-{
-    width: 100%;
+
+#editor {
+    box-sizing: border-box;
     height: auto;
-    background-color: lightblue;
-}
+    width: 100%;
+    background-color: khaki;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+    margin-right: 48px;
+    border: 3px solid black;
+  }
 
 .htmloutput {
     width: 100%;

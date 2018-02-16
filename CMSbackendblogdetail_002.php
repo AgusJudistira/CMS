@@ -225,12 +225,16 @@
       $commentaren = get_comments($blog_id);
       $commentaar_toegestaan = get_comments_allowed($blog_id, $thisfile);
     ?>
-    <div id="linkerkolom">
+    <div id="kop">
         <h1>Blog details</h1>
+    </div>
+    <div id="linkerkolom">        
         <h3><a href="CMSbackend_002.php">Terug naar blog administratie</a></h3>
     </div>
     <div id="rechterkolom">
       <?php
+        //Blogdetails worden al in de editor weergegeven
+        //Nog een keer weergeven is overbodig.
         //echo $blog_details;
         //echo "<br />";
       ?>
