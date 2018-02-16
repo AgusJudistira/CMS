@@ -155,7 +155,6 @@
             return $one_blog;
         }
 
-
         function comments_allowed($id_blog) {
             $db = dbconnect();
             $stmt = $db->prepare("SELECT commentaar_toegestaan
@@ -167,7 +166,6 @@
             $stmt->fetch();
             return $commentaar_toegestaan;
         }
-
 
         function get_comments($id_blog, $thisfile) {
             // Laat de commentaren bij een blog zien

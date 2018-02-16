@@ -63,14 +63,14 @@
             $email = $_POST['email'];
             $wwcode = get_oldpass($email);
             if (strlen($wwcode) > 0) {
-                $link = "localhost" . $thisfile. "?wwcode=$wwcode";                
+                $link = "http://localhost" . $thisfile. "?wwcode=$wwcode";                
                 $boodschap = "Klik $link om uw wachtwoord te kunnen wijzigen.";                
-                $headers = 'From: <webmaster@cms.com>' . "\r\n";
+                $headers = 'From: <admin@agusjudistira.nl>' . "\r\n";
                 mail($email, "ww reset", $boodschap, $headers);
 
                 hide_emailform();
                 echo "<h4><p>Een email met een link om uw wachtwoord te veranderen is net verstuurd.</p></h4>";
-                echo "<h4><p>Klik op de link om uw wachtwoord opnieuw in te stellen.</p></h4>";
+                echo "<h4><p>Klik op de link <b>in de email</b> om uw wachtwoord opnieuw in te stellen.</p></h4>";
                 echo "<h4><a href='CMSfrontend_002.php'>Klik hier om terug te gaan.</a></h4>";
             } else {
                 echo "<h4>Er is geen account met '$email' als email-adres.</h4>";
