@@ -9,20 +9,9 @@ if (isset($_GET['monthnumber'])) {
 }
 
 $output = "";
-$output .= maak_zoek_functie($thisfile);
 $output .= get_blogs_monthfiltered($maandnummer, $thisfile);
 echo $output;
 
-
-function maak_zoek_functie($thisfile) {
-    $zoek_formulier = "";
-    $zoek_formulier .= "<form id='frontend-zoekform' method='get' action='$thisfile'>";
-    $zoek_formulier .= "<b>Artikels opzoeken: </b><input id='zoekstring' name='zoekstring' type='text' size='40'></input>";
-    $zoek_formulier .= " <input type='submit' value='Opzoeken'>";
-    $zoek_formulier .= "</form><br />";
-
-    return $zoek_formulier;
-}
 
 function get_blogs_monthfiltered($maandnummer, $thisfile) {
     
