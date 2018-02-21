@@ -223,10 +223,17 @@
 
     <div class="container">
       <div id="linkerkolom">
-        <?php //echo "wachtwoord:" . md5('medLey'); ?>
-        <h3><a href="CMSbackendcategory_002.php">Categorie toevoegen</a></h3>
-        <h3><a href="CMSfrontend_002.php">Naar de voorkant</a></h3>
-        <?php echo $uitloggen; ?>
+        <?php 
+          if (strlen($uitloggen) == 0) {
+              $links = "<h3><a href=\"CMSfrontend_002.php\">Naar de voorkant</a></h3>";
+          }
+          else {
+              $links = "<h3><a href=\"CMSbackendcategory_002.php\">Categorie toevoegen</a></h3>";
+              $links .= "<h3><a href=\"CMSfrontend_002.php\">Naar de voorkant</a></h3>";
+          }
+          echo $uitloggen;
+          echo $links;
+        ?>
       </div>
       <div id="rechterkolom">
         <?php echo $bloglist; ?>
