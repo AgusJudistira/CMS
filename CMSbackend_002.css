@@ -35,15 +35,15 @@ table, th, td {
 }
 
 #rechterkolom {
-  position: absolute;
+  position: relative;
   display: block;
   height: auto;
   padding-left: 10px;
   padding-top: 10px;
   background-color: lightgrey;
-  float: right;
+  float: left;
   margin-top: 82px;
-  left: 25%;
+  left: 26%;
   width: 75%;
   
 }

@@ -70,7 +70,7 @@ editor.onkeyup = function(e) {
     var afkorting = afkortingen[i][0];
     var voluit = afkortingen[i][1];
     if (buffer.endsWith(afkorting)) {
-      alert('afkorting gevonden');
+      //alert('afkorting gevonden');
       var startPos = getCaretPosition(this);
       //var startPos = this.selectionStart;
       console.log("startPos="+startPos);

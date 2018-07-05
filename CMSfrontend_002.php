@@ -291,7 +291,7 @@
                 setcookie('email',$email, time() + 7200); 
                 setcookie('voornaam',$voornaam, time() + 7200);
                 setcookie('achternaam',$achternaam, time() + 7200);
-                // om de cookies snel te wijzigen
+                // om de cookies direct te wijzigen
                 $_COOKIE['email'] = $email;
                 $_COOKIE['voornaam'] = $voornaam;
                 $_COOKIE['achternaam'] = $achternaam;

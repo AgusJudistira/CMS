@@ -2,7 +2,7 @@
 
 function dbconnect() {
   $dbserver = "localhost";
-  $dbname = "CMS_001";
+  $dbname = "CMS";
   $dbuser = "blogger";
   $dbpass = "bloggoPLAN";
 
