@@ -13,7 +13,8 @@ table, th, td {
   display: block;
   white-space: nowrap;
   overflow: hidden;
-  background-color: darkblue;
+  /* background-color: darkblue; */
+  background: linear-gradient(to bottom, darkblue, blue);
   color: white;
   padding: 10px;
   z-index: 1;
@@ -24,7 +25,8 @@ table, th, td {
   display: block;
   padding-right: 10px;
   padding-left: 10px;
-  background-color: lightskyblue;
+  background: linear-gradient(to right,skyblue, cyan);
+  /* background-color: lightskyblue;*/
   float: left;
   margin-top: 72px;
   /*top: 15%;
@@ -37,10 +39,11 @@ table, th, td {
 
 #rechterkolom {
   position: absolute;
-  display: block;
+  /* display: block; */
   padding-left: 10px;
   padding-top: 10px;
-  background-color: khaki;
+  background: linear-gradient(to right, khaki, antiquewhite);
+  /* background-color: khaki;*/
   float: right;
   /*top: 15%; */
   margin-top: 82px;
